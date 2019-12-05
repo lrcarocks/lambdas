@@ -1,0 +1,5 @@
+#node modules folder
+node_modules/
+
+#.idea files (Webstorm generated files)
+.idea
