@@ -53,6 +53,10 @@ module.exports.handler = async event => {
                     const LatLong = destLatLong[index];
                     console.log('min latlong:', JSON.stringify(LatLong));
                     console.log('address details:', JSON.stringify(rDists[index]));
+                    const destLL = LatLong.lat + ',' + LatLong.long;
+                    const directionsUrl = 'https://maps.googleapis.com/maps/api/directions/json?origin=' + origins + '&destination=' + destLL + '&key=AIzaSyAeUOvz7ZQO7BI0nP7czlVWnLS-L3h7sA0';
+                    const directionRes = await fetch(directionsUrl);
+                    const directionsData = await directionRes.json();
                     const resp = {
                         lat: LatLong.lat,
                         long: LatLong.long,
@@ -62,7 +66,8 @@ module.exports.handler = async event => {
                         transId: LatLong.tId,
                         userId: LatLong.userId,
                         spotId: LatLong.tSpotId,
-                        wingCode: LatLong.wingCode
+                        wingCode: LatLong.wingCode,
+                        route: directionsData
                     };
                     console.log('final resp:', JSON.stringify(resp));
                     return resp;
