@@ -1,11 +1,15 @@
 'use strict'
 
-const client = require('data-api-client')({
-    secretArn: process.env.AWS_SECRET_STORE_ARN,
-    resourceArn: process.env.DB_CLUSTER_ARN,
-    database: process.env.DB_NAME
-});
-
 module.exports.handler = async event => {
-    return event;
+
+    const {lat, long, destLat, destLong} = event.input;
+
+    const origins = lat + ',' + long;
+    const destLL = destLat + ',' + destLong;
+
+    const directionsUrl = 'https://maps.googleapis.com/maps/api/directions/json?origin=' + origins + '&destination=' + destLL + '&key=AIzaSyAeUOvz7ZQO7BI0nP7czlVWnLS-L3h7sA0';
+    const directionRes = await fetch(directionsUrl);
+    const directionsData = await directionRes.json();
+
+    return {...event.input,  route: directionsData};
 };
