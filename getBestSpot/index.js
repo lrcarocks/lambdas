@@ -1,10 +1,33 @@
 'use strict'
 const fetch = require("node-fetch");
+const aws = require('aws-sdk');
 const client = require('data-api-client')({
     secretArn: process.env.AWS_SECRET_STORE_ARN,
     resourceArn: process.env.DB_CLUSTER_ARN,
     database: process.env.DB_NAME
 });
+
+const lambda = new aws.Lambda({
+    apiVersion: '2017-02-28',
+    region: 'us-east-1'
+});
+
+function sendAlert(userId, username, ALat, ALong, DLat, DLong, cb) {
+    const notification = {
+        title: 'Your Spot Was Selected.',
+        body: `Yous spot was picked by ${username}`,
+        userId: userId,
+        arriverCoords: {lat: ALat, long: ALong},
+        destCoords: {lat: DLat, DLong}
+    };
+    const event = {userId: [userId], notification: JSON.stringify(notification), data: JSON.stringify(notification)};
+    console.log('event', event);
+    lambda.invoke({
+        InvocationType: 'RequestResponse',
+        FunctionName: 'arn:aws:lambda:us-east-1:406941641630:function:fcm',
+        Payload: JSON.stringify(event) // pass params
+    }, cb);
+}
 
 module.exports.handler = async event => {
     console.log(JSON.stringify(event));
@@ -44,7 +67,11 @@ module.exports.handler = async event => {
                 const routeData = data.rows[0].elements;
                 console.log('Route Data', JSON.stringify(routeData));
                 if (routeData.length > 0) {
-                    const rDists = routeData.map(r => r.distance.value);
+                    const rDists = routeData.map(r => {
+                        if (r && r.distance) {
+                            return r.distance.value;
+                        }
+                    });
                     console.log('array dist:', rDists);
                     const minDistance = Math.min(...rDists);
                     console.log('min dis:', minDistance);
@@ -70,6 +97,9 @@ module.exports.handler = async event => {
                         route: directionsData
                     };
                     console.log('final resp:', JSON.stringify(resp));
+                    sendAlert(LatLong.userId, 'Arriver', event.lat, event.long, LatLong.lat, LatLong.long, function (error, data) {
+                        console.log('invoke:', error, data);
+                    });
                     return resp;
                 } else {
                     console.log('invalid destination address');

@@ -5,115 +5,60 @@ const client = require('data-api-client')({
     resourceArn: process.env.DB_CLUSTER_ARN,
     database: process.env.DB_NAME
 });
+const axios = require('axios');
 
-const https = require('https');
-const {google} = require('googleapis');
-const sKeys = require("./touchpark_key");
-const HOST = 'fcm.googleapis.com';
-const PATH = '/v1/projects/' + sKeys.project_id + '/messages:send';
-const MESSAGING_SCOPE = 'https://www.googleapis.com/auth/firebase.messaging';
-const SCOPES = [MESSAGING_SCOPE];
+const fcmUrl = 'https://fcm.googleapis.com/fcm/send';
+const serverKey = 'key=AAAAnowspjQ:APA91bGE0aPE7AUavRMIJFUApOji1JqRN91zqcL5bnWa5qPg5LpjPyL70sqi8PImu5GUg8G9sz_9SssvzGYAxuzVmh_Q725WI1udeXXd_OKM7X6lVxSqlV4JjSYdaCAOLkOYtGbiWoTX';
 
-function getAccessToken() {
-    return new Promise(function (resolve, reject) {
-        let jwtClient = new google.auth.JWT(
-            sKeys.client_email,
-            null,
-            sKeys.private_key,
-            SCOPES,
-            null
-        );
-        jwtClient.authorize(function (err, tokens) {
-            if (err) {
-                reject(err);
-                return;
-            }
-            resolve(tokens.access_token);
-        });
-    });
-}
 
-function sendFcmMessage(fcmMessage) {
-    getAccessToken().then(function (accessToken) {
-        var options = {
-            hostname: HOST,
-            path: PATH,
-            method: 'POST',
-            // [START use_access_token]
-            headers: {
-                'Authorization': 'Bearer ' + accessToken
-            }
-            // [END use_access_token]
-        };
-
-        var request = https.request(options, function (resp) {
-            resp.setEncoding('utf8');
-            resp.on('data', function (data) {
-                console.log('Message sent to Firebase for delivery, response:');
-                console.log(data);
-            });
-        });
-
-        request.on('error', function (err) {
-            console.log('Unable to send message to Firebase');
-            console.log(err);
-        });
-
-        request.write(JSON.stringify(fcmMessage));
-        request.end();
-    });
-}
-
-function MsgTemplate(alert, body, token) {
-    return {
-        "message": {
-            "token": token,
-            "notification": {
-                ...alert
-            },
-            "data": {
-                ...body
-            },
-            "android": {
-                "notification": {
-                    "body": body
-                }
-            },
-            "apns": {
-                "headers": {
-                    ...body
-                },
-                "payload": {
-                    "aps": {
-                        "category": "NEW_MESSAGE_CATEGORY"
-                    }
-                }
-            }
+async function sendFcmMessage(fcmMessage) {
+    console.log('message', JSON.stringify(fcmMessage));
+    var options = {
+        // [START use_access_token]
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': serverKey
         }
+    };
+
+    const response = await axios.post(fcmUrl, fcmMessage, options);
+    const data = response.data;
+    console.log('axios', data);
+    return data;
+}
+
+function MsgTemplate(notification, data, token) {
+    console.log(notification, data);
+    return {
+        "to": token,
+        "collapse_key": "type_a",
+        "notification": notification,
+        "data": data
     };
 }
 
 module.exports.handler = async event => {
-    const {alert, body, userId} = event;
+    const {notification, data, userId} = event;
 
     console.log(JSON.stringify(event));
 
-    const data = await client.query('SELECT FcmToken FROM UserDetails WHERE ID IN (:userId)', {userId: userId.toString()});
+    console.log(userId.toString());
+    const fcmTokens = await client.query('SELECT FcmToken FROM UserDetails WHERE ID IN (:userId)', {userId: userId.toString()});
     console.log(JSON.stringify(data));
-    if (data.records.length > 0) {
+    if (fcmTokens.records.length > 0) {
         let tokens = null;
-        data.records.forEach(t => {
+        fcmTokens.records.forEach(t => {
             if (tokens) {
-                tokens += ',' + t;
+                tokens += ',' + t.FcmToken;
             } else {
-                tokens = t;
+                tokens = t.FcmToken;
             }
         });
 
         console.log('tokens', tokens);
 
         if (tokens) {
-            sendFcmMessage(MsgTemplate(alert, body, tokens));
+            await sendFcmMessage(MsgTemplate(JSON.parse(notification), JSON.parse(data), tokens));
         }
 
         return true;

@@ -10,6 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "aws-sdk": "^2.594.0",
     "data-api-client": "^1.0.0",
     "google-distance-matrix": "^1.1.1",
     "node-fetch": "^2.6.0"
