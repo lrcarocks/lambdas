@@ -1,0 +1,11 @@
+#**
+  Select statement for a relational database data source
+*#
+{
+    "version": "2018-05-29",
+    "statements": [
+        "INSERT INTO DEVELOPMENTDB.ParkingSpotDetails (WingCode,Latitude,Longitude,Datecreated) VALUES ('$ctx.args.wingcode','$ctx.args.lat','$ctx.args.long',CURRENT_TIMESTAMP)",
+        "SELECT ID FROM DEVELOPMENTDB.ParkingSpotDetails order by ID desc LIMIT 1"
+
+    ]
+}

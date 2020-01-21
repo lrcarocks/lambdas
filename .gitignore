@@ -3,3 +3,5 @@ node_modules/
 
 #.idea files (Webstorm generated files)
 .idea
+
+*/node_modules/

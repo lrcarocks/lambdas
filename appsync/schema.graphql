@@ -1,0 +1,337 @@
+﻿schema {
+  query: Query
+  mutation: Mutation
+  subscription: Subscription
+}
+
+type ArriverLAtLongs {
+  ArriverId: String
+  ArriverLat: String
+  ArriverLong: String
+  ExitTime: String
+  TrasactionCompleted: Boolean
+}
+
+type BestSpot {
+  destAddr: String
+  lat: Float!
+  long: Float!
+  orgAddr: String
+  providerId: ID
+  route: AWSJSON
+  spotId: Int
+  transId: Int
+  userId: Int
+  wingCode: String
+}
+
+type Mutation {
+  CreateTrasactionHistory(EntryTime: String, ExitTime: String, ParkingSpotID: Int!, UserId: Int!): userParkedSpot
+  createNewParkingSpot(CreateParkingSpot: CreateParkingSpot!): [parkingSpot]
+  createUsers(CreateUserDetailsInput: CreateUserDetailsInput!): User
+  insertParkingDetails(ParkingReservationID: Int!): [parkingDetails]
+  insertParkingLocation(lat: String, long: String, wingcode: String): [locationId]
+  insertParkingSpot(ParkingSpotID: Int!, UserID: String!): parkingSpot
+  insertUserVehicle(UserVehicleInput: UserVehicleInput!): UservehicleDetails
+  parkHere(parkHere: parkHereInput!): userParkedSpot
+  pickSpot(dLat: Float!, dLong: Float!, lat: Float!, long: Float!, providerId: ID!): PickSpot
+  #  Put a single value of type 'Post'.
+  ############################# If an item exists it's updated. If it does not it's created.
+  putPost(id: ID!, title: String!): Post
+  sendMessage(data: String!, notification: String!, userId: [ID]!): Boolean
+  updateArriverLatLongs(ArriverId: Int!, ArriverLat: String, ArriverLong: String, ID: Int!): updateStatus
+  updateDepartConfirmation(TrasactionID: Int): updateStatus
+  updateDepartTime(ParkingReservationID: Int, datetime: AWSDateTime): [parkingSpot]
+  updateLocation(input: updateLocationInput): updateLocation
+  updateParkingDetails(ParkingReservationID: Int!): [parkingDetails]
+  updateParkingDetailsWithExitTime(TransactionID: Int!, datetime: String): [parkingDetails]
+  updateParkingSpotStatus(ID: Int!, status: Boolean): updateParkingSpotStatus
+  updateReservedWing(ReservedWing: String!, Username: String!): updateReservedWing
+  updateStatus(id: Int!, status: Boolean): updateStatus
+  updateTransactionStatus(ID: Int!): updateStatus
+  updateUserDetails(FirstName: String, LastName: String, PhoneNumber: String, ProviderID: Int, UserID: Int!): User
+  updateUserFcmAndDevice(DevicePlatform: String!, FcmToken: String!, Username: String!): User
+  updateUserVehicle(UserID: Int!, VehicleColor: String, VehicleModel: String, VehicleName: String, VehicleNumber: String!): UservehicleDetails
+  updateUsercognitoId(UserCognitoId: String!, Username: String!): updateusercognitoId
+}
+
+type PickSpot {
+  dLat: Float
+  dLong: Float
+  lat: Float
+  long: Float
+  providerId: ID
+  route: AWSJSON
+}
+
+type Post {
+  id: ID!
+  title: String!
+}
+
+type Query {
+  getArriverLatLongs(ArriverId: Int!, TrasHistoryId: Int!): [ArriverLAtLongs]
+  getAvailableLocations(ReservedWing: String!, date: String, providerId: String, time: String, userId: Int): [availableLocations]
+  getAvailableLocationsForGoldWing(ReservedWing: String!, date: String, providerId: String, time: String): [availableLocations]
+  getAvailableLocationsForGreenWing(ReservedWing: String!, date: String, providerId: String, time: String): [availableLocations]
+  getAvailableLocations_v1(ReservedWing: String!, date: String, providerId: String, time: String): [availableLocations]
+  getAvailableNearestSpots(providerId: [ID!], userId: ID!): [availableLocations]
+  getBestSpot(lat: Float!, long: Float!, providerId: ID!): BestSpot
+  getLatestParkingSpot(ParkingSpotID: Int!, UserID: Int!): [parkingSpot]
+  getLocations: [locations]
+  getLocationson(PermitType: String!): locations
+  getNearestLocations(ReservedWing: String!, lat: String, limit: Int!, long: String): [nearestLocations]
+  getProviders: [provider]
+  getProvidersList: [provider]
+  getReservedSpotDetailsOfTheUser(userId: Int): [userParkedSpot]
+  getTrasactionHistory(userId: Int!): [TransactionHistory]
+  getUser(Username: String!): [User]
+  getUserVehicle(UserID: Int!): [UservehicleDetails]
+  #  Get a single value of type 'Post' by primary key.
+  singlePost(id: ID!): Post
+  testLambda(id: ID!): [String]
+}
+
+type Subscription {
+  onUpdateLocation(userId: ID!): updateLocation @aws_subscribe(mutations : ["updateLocation"])
+}
+
+type TransactionHistory {
+  ArriverId: Int
+  ArriverLat: String
+  ArriverLong: String
+  Cost: Float
+  EntryTime: String
+  ExitTime: String
+  ID: Int
+  IsConfirmed: Boolean
+  ParkingSpotID: Int
+  TrasactionCompleted: Boolean
+  UserId: Int!
+}
+
+type User {
+  Credit: Int
+  DateUpdated: String
+  Datecreated: String
+  DevicePlatform: String
+  Email: String!
+  FcmToken: String
+  FirstName: String
+  ID: Int
+  IsActive: Int
+  IsHandicap: Int
+  IsOnline: Int
+  LastName: String
+  PhoneNumber: String!
+  ProviderID: Int
+  ReservedWing: String!
+  UserCognitoId: String
+  Username: String!
+  providerCity: String
+  providerLatitude: String
+  providerLongitude: String
+  providerName: String
+  providerphoneNo: String
+}
+
+type UservehicleDetails {
+  Datecreated: AWSDateTime
+  Dateupdated: AWSDateTime
+  ID: Int
+  UserID: Int!
+  VehicleColor: String
+  VehicleModel: String
+  VehicleName: String
+  VehicleNumber: String!
+}
+
+type availableLocations {
+  EntryTime: String
+  ExitTime: String
+  FcmToken: String
+  IsConfirmed: Boolean
+  Latitude: String!
+  Longitude: String!
+  ParkingSpotID: Int!
+  ProviderID: Int
+  SPOTID: Int
+  TrasHistoryID: Int!
+  UserId: Int
+  WingCode: String!
+}
+
+type locationId {
+  ID: Int
+}
+
+type locations {
+  Lat: String!
+  Long: String!
+  Lot: String!
+  PermitType: String!
+  SpaceNo: String!
+}
+
+type nearestLocations {
+  ID: Int!
+  Latitude: String!
+  Longitude: String!
+  WingCode: String!
+  distance: String!
+  status: Boolean
+}
+
+type parkingDetails {
+  ID: Int
+}
+
+type parkingSpot {
+  Cost: Int
+  Datecreated: AWSDateTime
+  Dateupdated: AWSDateTime
+  Dimensions: String
+  DisplayName: String
+  ID: Int
+  Latitude: String
+  Longitude: String
+  ParkingLetter: String
+  ProviderID: Int
+  WingCode: String
+  isblocked: Int
+}
+
+type provider {
+  Address1: String
+  Address2: String
+  City: String
+  Datecreated: String
+  Dateupdate: String
+  ID: Int!
+  IsActive: Boolean
+  Name: String!
+  Phonenumber: String!
+  State: String
+  Zipcode: String!
+}
+
+type updateLocation {
+  destLat: Float!
+  destLong: Float!
+  lat: Float!
+  long: Float!
+  route: AWSJSON
+  userId: ID!
+}
+
+type updateParkingSpotStatus {
+  ID: Int
+  status: Boolean
+}
+
+type updateReservedWing {
+  ReservedWing: String!
+  Username: String!
+}
+
+type updateStatus {
+  ID: Int!
+  status: Boolean
+}
+
+type updateusercognitoId {
+  UserCognitoId: String
+  Username: String!
+  status: Boolean
+}
+
+type userParkedSpot {
+  ArriverId: Int
+  ArriverLat: String
+  ArriverLong: String
+  ID: Int
+  IsConfirmed: Boolean
+  ParkingSpotID: Int
+  ProviderID: Int
+  TransHistoryID: Int
+  TrasactionCompleted: Boolean
+  UserId: Int
+  WingCode: String
+  parkedLat: String
+  parkedLong: String
+}
+
+input CreateParkingSpot {
+  Dimensions: String
+  DisplayName: String
+  ID: Int
+  Latitude: String!
+  Longitude: String!
+  ParkingLetter: String
+  ProviderID: Int!
+  WingCode: String!
+}
+
+input CreateTrasHistory {
+  ArriverId: Int
+  ArriverLat: String
+  ArriverLong: String
+  Cost: Float
+  EntryTime: String
+  ExitTime: String
+  ID: Int
+  IsConfirmed: Boolean
+  ParkingSpotID: Int
+  TrasactionCompleted: Boolean
+  UserId: Int
+  parkedLat: String
+  parkedLong: String
+}
+
+input CreateUserDetailsInput {
+  Credit: Int
+  DateUpdated: String
+  Datecreated: String
+  Email: String!
+  FirstName: String
+  ID: Int
+  IsActive: Int
+  IsHandicap: Int
+  IsOnline: Int
+  LastName: String
+  PhoneNumber: String!
+  ProviderID: Int
+  ReservedWing: String!
+  UserCognitoId: String
+  Username: String!
+}
+
+input UserVehicleInput {
+  Datecreated: AWSDateTime
+  Dateupdated: AWSDateTime
+  ID: Int
+  UserID: Int!
+  VehicleColor: String
+  VehicleModel: String
+  VehicleName: String
+  VehicleNumber: String!
+}
+
+input parkHereInput {
+  DisplayName: String!
+  EntryTime: String!
+  ExitTime: String!
+  Latitude: Float!
+  Longitude: Float!
+  ProviderID: ID!
+  UserId: String!
+  WingCode: String!
+}
+
+input updateLocationInput {
+  destLat: Float!
+  destLong: Float!
+  lat: Float!
+  long: Float!
+  userId: ID!
+}

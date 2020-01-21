@@ -1,0 +1,11 @@
+
+#**
+  Select statement for a relational database data source
+*#
+{
+    "version": "2018-05-29",
+    "statements": [
+      "UPDATE DEVELOPMENTDB.ParkingTransactionDetails SET IsParked = 1,ActualExitTime='$ctx.args.datetime' WHERE ParkingReservationID=$ctx.args.ParkingReservationID",
+
+    ]
+}

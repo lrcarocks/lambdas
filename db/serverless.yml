@@ -1,0 +1,194 @@
+service: db
+
+frameworkVersion: ">=1.21.0 <2.0.0"
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  region: us-east-1
+  stage: beta
+  memorySize: ${self:custom.memSize.${self:custom.stage}}
+  profile: ams-backend
+  versionFunctions: false
+  environment:
+    STAGE: ${self:custom.stage}
+    AWSREGION: ${self:provider.region}
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - secretsmanager:*
+      Resource:
+        - "*"
+    - Effect: "Allow"
+      Action:
+        - rds-data:*
+      Resource:
+        - "*"
+    - Effect: "Allow"
+      Action:
+        - dynamodb:*
+      Resource: "*"
+
+package:
+  exclude:
+    - package-lock.json
+    - package.json
+
+plugins:
+  - serverless-pseudo-parameters
+
+custom:
+  stage: ${opt:stage, self:provider.stage}
+  memSize:
+    dev: 128
+    beta: 512
+  throughput:
+    dev: 5
+    beta: 10
+  #es_volume_size:
+    #dev: 10
+    #beta: 20
+   
+  #es_instance_count:
+   # dev: 1
+    #beta: 5
+    
+
+resources:
+  Resources: 
+    myDBSubnetGroup:
+      Type: AWS::RDS::DBSubnetGroup    
+      Properties: 
+        DBSubnetGroupDescription: DB Subnet Group Created
+        SubnetIds: 
+          - subnet-1936a427
+          - subnet-cb4217e5
+          - subnet-16213f5c
+          - subnet-fe246a99
+          - subnet-cca9e290
+          - subnet-2538382a
+        
+    
+    # Bastion:
+    #   Type: AWS::EC2::Instance
+    #   # DependsOn: BastionSecurityGroup
+    #   Properties:
+    #     DisableApiTermination: false
+    #     ImageId: ami-0565af6e282977273
+    #     InstanceType: t2.nano
+    #     KeyName: bastion
+    #     Monitoring: false
+    #     # SecurityGroupIds:
+    #     #   - Ref: BastionSecurityGroup
+    #     UserData: Base64 "apt-get install mysql-client -y"
+
+    # BastionSecurityGroup:
+    #   Type: AWS::EC2::SecurityGroup
+    #   Properties:
+    #     GroupDescription: "Security Group for Aurora Serverless DB Cluster's Bastion Host"
+    #     SecurityGroupEgress:
+    #       - CidrIp: 0.0.0.0/0
+    #         FromPort: -1
+    #         ToPort: -1
+    #         IpProtocol: -1
+    #       # - DestinationSecurityGroupId:
+    #       #     Ref: VpcSecurityGroupId
+    #       #   FromPort: 3306
+    #       #   ToPort: 3306
+    #       #   IpProtocol: tcp
+    #     SecurityGroupIngress: []
+
+    MasterUserSecret:
+      Type: AWS::SecretsManager::Secret
+      Properties:
+        Description: "DB Cluster's Master User Password secret"
+        # SecretString: String
+        GenerateSecretString:
+          SecretStringTemplate: '{"username": "root"}'
+          GenerateStringKey: "password"
+          PasswordLength: 10
+          ExcludeCharacters: '"@/\'
+        Name: MasterUserSecretAurora-${self:custom.stage}
+
+    DBCluster:
+      Type: AWS::RDS::DBCluster
+      DependsOn: MasterUserSecret
+      Properties:
+        Engine: aurora
+        EngineMode: serverless
+        EngineVersion: 5.6
+        DatabaseName: mysqlauroradb
+        DBSubnetGroupName: 
+          Ref: myDBSubnetGroup
+        DBClusterIdentifier: mysqlauroradb-${self:custom.stage}
+        MasterUsername:
+          Fn::Join:
+            [
+              "",
+              [
+                "{{resolve:secretsmanager:",
+                Ref: MasterUserSecret,
+                ":SecretString:username}}",
+              ],
+            ]
+        MasterUserPassword:
+          Fn::Join:
+            [
+              "",
+              [
+                "{{resolve:secretsmanager:",
+                Ref: MasterUserSecret,
+                ":SecretString:password}}",
+              ],
+            ]
+        BackupRetentionPeriod: 35
+        DeletionProtection: false
+
+    SecretTargetAttachment:
+      Type: AWS::SecretsManager::SecretTargetAttachment
+      DependsOn: DBCluster
+      Properties:
+        TargetType: AWS::RDS::DBCluster
+        SecretId:
+          Ref: MasterUserSecret
+        TargetId:
+          Ref: DBCluster
+
+  Outputs:
+
+    DBClusterIdentifier:
+      Description: "Aurora Serverless DB cluster identifier"
+      Value:
+        Ref: DBCluster
+      Export:
+        Name: DBClusterIdentifier-${self:custom.stage}
+
+    DBName:
+      Description: "Database name"
+      Value: mysqlauroradb
+      Export:
+        Name: DBName-${self:custom.stage}
+
+    DBClusterArn:
+      Description: "Aurora Serverless DB cluster ARN"
+      Value:
+        Fn::Join:
+          [
+            ":",
+            [
+              "arn:aws:rds",
+              "#{AWS::Region}",
+              "#{AWS::AccountId}",
+              "cluster",
+              Ref: DBCluster,
+            ],
+          ]
+      Export:
+        Name: DBCluster-${self:custom.stage}
+
+    MasterUserSecret:
+      Description: "MasterUserSecret Arn"
+      Value:
+        Ref: MasterUserSecret
+      Export:
+        Name: MasterUserSecretAurora-${self:custom.stage}

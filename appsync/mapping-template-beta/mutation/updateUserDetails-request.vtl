@@ -1,0 +1,10 @@
+#**
+  Select statement for a relational database data source
+*#
+{
+    "version": "2018-05-29",
+    "statements": [
+        "Update DEVELOPMENTDB.UserDetails set FirstName='$ctx.args.FirstName',LastName='$ctx.args.LastName' ,PhoneNumber='$ctx.args.PhoneNumber', ProviderID=$ctx.args.ProviderID where ID = $ctx.args.UserID",
+          "SELECT * FROM DEVELOPMENTDB.UserDetails WHERE ID=$ctx.args.UserID "
+    ]
+}

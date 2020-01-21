@@ -1,0 +1,517 @@
+service: appsync
+
+frameworkVersion: ">=1.21.0 <2.0.0"
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  region: us-east-1
+  stage: beta
+  memorySize: ${self:custom.memSize.${self:custom.stage}}
+  profile: ams-backend
+  # profile: fliphire
+  versionFunctions: false
+  environment:
+    AWS_SECRET_STORE_ARN: ${cf:db-${self:custom.stage}.MasterUserSecret}
+    DB_CLUSTER_ARN: ${cf:db-${self:custom.stage}.DBClusterArn}
+    DB_NAME: ${cf:db-${self:custom.stage}.DBName}
+    STAGE: ${self:custom.stage}
+    AWSREGION: ${self:provider.region}
+
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - lambda:InvokeFunction
+        - lambda:InvokeAsync
+      Resource: "*"
+    - Effect: "Allow"
+      Action:
+        - secretsmanager:*
+      Resource:
+        - "*"
+    - Effect: "Allow"
+      Action:
+        - rds-data:*
+      Resource:
+        - "*"
+    - Effect: "Allow"
+      Action:
+        - dynamodb:*
+      Resource: "*"
+    - Effect: "Allow"
+      Action:
+        - es:*
+      Resource:
+        - "*"
+    - Effect: "Allow"
+      Action:
+        - sns:*
+      Resource:
+        - "*"
+    - Effect: "Allow"
+      Action:
+        - rds-data:*
+      Resource:
+        - "*"
+    - Effect: "Allow"
+      Action:
+        - cognito-idp:*
+      Resource: "*"
+    - Effect: "Allow"
+      Action:
+        - logs:*
+      Resource: "*"
+
+plugins:
+  - serverless-pseudo-parameters
+  - serverless-appsync-plugin
+  - serverless-plugin-split-stacks
+
+package:
+  exclude:
+    - mapping-templates-beta/**
+    - package-lock.json
+    - package.json
+    - schema.gql
+
+functions:
+
+  Fcm:
+    handler: fcm.handler
+    description: "Lambda resolver to push fcm message to users "
+  getAvailableSpots:
+    handler: getAvailableSpots.handler
+    description: "Lambda resolver for Get Available Spots"
+
+  getBestSpot:
+    handler: getBestSpot.handler
+    description: "Lambda resolver for Get Best Spot"
+  parkHere:
+    handler: parkHere.handler
+    description: "Lambda resolver for Park Here"
+  pickSpot:
+    handler: pickSpot.handler
+    description: "Lambda resolver for Pick Best Spot"
+  updateLocation:
+    handler: updateLocation.handler
+    description: "Lambda resolver for Update User Current Position"
+
+custom:
+  memSize:
+    dev: 128
+    beta: 512
+  stage: ${opt:stage, self:provider.stage}
+  accountId: 884743863304
+  splitStacks:
+    perFunction: false
+    perType: true
+  authType:
+    dev: AMAZON_COGNITO_USER_POOLS
+    beta: AMAZON_COGNITO_USER_POOLS
+  appSync:
+    name: TouchPark-${self:custom.stage}
+    authenticationType: ${self:custom.authType.${self:custom.stage}}
+    userPoolConfig:
+      awsRegion: ${self:provider.region}
+      defaultAction: ALLOW
+      userPoolId: us-east-1_4lkcldKjN #${env:USER_POOL_ID}
+    logConfig:
+      loggingRoleArn: { 'Fn::GetAtt': [AppSyncServiceRole, Arn] }
+      level: ALL
+    mappingTemplatesLocation: mapping-template-${self:custom.stage}
+    mappingTemplates:
+      - dataSource: TouchPark
+        type: Query
+        field: singlePost
+        request: request.vtl
+        response: response.vtl
+
+      - dataSource: getAvailableSpots
+        type: Query
+        field: testLambda
+        request: query/testLambda-request.vtl
+        response: response.vtl
+
+      - dataSource: TouchPark
+        type: Query
+        field: getLocations
+        request: query/getLocations-request.vtl
+        response: query/getLocations-response.vtl
+
+      - dataSource: TouchPark
+        type: Query
+        field: getLocationson
+        request:  request.vtl
+        response: response.vtl
+
+
+      - dataSource: TouchPark
+        type: Query
+        field: getNearestLocations
+        request:  query/getNearestLocations-request.vtl
+        response: query/getNearestLocations-response.vtl
+
+
+      - dataSource: TouchPark
+        type: Query
+        field: getAvailableLocationsForGreenWing
+        request: query/getAvailableLocationsForGreenWing-request.vtl
+        response: query/getAvailableLocationsForGreenWing-response.vtl
+
+      - dataSource: TouchPark
+        type: Query
+        field: getAvailableLocations
+        request: query/getAvailableLocations-request.vtl
+        response: query/getAvailableLocations-response.vtl
+
+      - dataSource: getBestSpotLambda
+        type: Query
+        field: getBestSpot
+        request: query/request.vtl
+        response: response.vtl
+
+      - dataSource: getAvailableSpots
+        type: Query
+        field: getAvailableNearestSpots
+        request:  request-common.vtl
+        response: response.vtl
+
+      - dataSource: TouchPark
+        type: Query
+        field: getAvailableLocations_v1
+        request:  query/getAvailableLocations_v1-request.vtl
+        response: query/getAvailableLocations_v1-response.vtl
+
+      - dataSource: TouchPark
+        type: Query
+        field: getAvailableLocationsForGoldWing
+        request: request.vtl
+        response: response.vtl
+
+      - dataSource: TouchPark
+        type: Query
+        field: getLatestParkingSpot
+        request:  request.vtl
+        response: response.vtl
+
+      - dataSource: TouchPark
+        type: Query
+        field: getProviders
+        request: query/getProviders-request.vtl
+        response: query/getProviders-response.vtl
+
+      - dataSource: TouchPark
+        type: Query
+        field: getProvidersList
+        request: query/getProvidersList-request.vtl
+        response: query/getProvidersList-response.vtl
+
+      - dataSource: TouchPark
+        type: Query
+        field: getUser
+        request: request.vtl
+        response: response.vtl
+
+      - dataSource: TouchPark
+        type: Query
+        field: getUserVehicle
+        request: recruiter/videos-request.vtl
+        response: response.vtl
+
+      - dataSource: TouchPark
+        type: Query
+        field: getReservedSpotDetailsOfTheUser
+        request: recruiter/video-request.vtl
+        response: recruiter/video-response.vtl
+
+      - dataSource: TouchPark
+        type: Query
+        field: getTrasactionHistory
+        request: request.vtl
+        response: response.vtl
+
+      - dataSource: TouchPark
+        type: Query
+        field: getArriverLatLongs
+        request:  request.vtl
+        response: response.vtl
+
+      - dataSource: TouchPark
+        type: Mutation
+        field: updateStatus
+        request: mutation/updateStatus-request.vtl
+        response: mutation/updateStatus-response.vtl
+
+      - dataSource: TouchPark
+        type: Mutation
+        field: updateParkingSpotStatus
+        request: mutation/updateParkingSpotStatus-request.vtl
+        response: mutation/updateParkingSpotStatus-response.vtl
+
+      - dataSource: TouchPark
+        type: Mutation
+        field: insertParkingLocation
+        request: mutation/insertParkingLocation-request.vtl
+        response: mutation/response.vtl
+
+      - dataSource: TouchPark
+        type: Mutation
+        field: updateUsercognitoId
+        request: request.vtl
+        response: response.vtl
+
+      - dataSource: TouchPark
+        type: Mutation
+        field: insertParkingSpot
+        request: mutation/insertParkingSpot-request.vtl
+        response: mutation/insertParkingSpot-response.vtl
+
+      - dataSource: TouchPark
+        type: Mutation
+        field: insertParkingDetails
+        request: mutation/insertParkingDetails-request.vtl
+        response: mutation/insertParkingDetails-response.vtl
+
+      - dataSource: TouchPark
+        type: Mutation
+        field: updateParkingDetails
+        request: mutation/updateParkingDetails-request.vtl
+        response: mutation/updateParkingDetails-response.vtl
+
+      - dataSource: TouchPark
+        type: Mutation
+        field: updateParkingDetailsWithExitTime
+        request: mutation/updateParkingDetailsWithExitTime-request.vtl
+        response: mutation/updateParkingDetailsWithExitTime-response.vtl
+
+      - dataSource: TouchPark
+        type: Mutation
+        field: createUsers
+        request: mutation/createUsers-request.vtl
+        response: mutation/createUsers-response.vtl
+
+
+      - dataSource: TouchPark
+        type: Mutation
+        field: updateUserDetails
+        request: mutation/updateUserDetails-request.vtl
+        response: mutation/updateUserDetails-response.vtl
+
+      - dataSource: TouchPark
+        type: Mutation
+        field: updateUserFcmAndDevice
+        request: mutation/updateUserFcmAndDevice-request.vtl
+        response: mutation/updateUserFcmAndDevice-response.vtl
+
+      - dataSource: TouchPark
+        type: Mutation
+        field: updateDepartTime
+        request: mutation/updateDepartTime-request.vtl
+        response: mutation/updateDepartTime-response.vtl
+
+      - dataSource: TouchPark
+        type: Mutation
+        field: updateDepartConfirmation
+        request: mutation/updateDepartConfirmation-request.vtl
+        response: mutation/updateDepartConfirmation-response.vtl
+
+      - dataSource: TouchPark
+        type: Mutation
+        field: updateReservedWing
+        request: mutation/updateReservedWing-request.vtl
+        response: mutation/updateReservedWing-response.vtl
+
+      - dataSource: TouchPark
+        type: Mutation
+        field: insertUserVehicle
+        request: mutation/insertUserVehicle-request.vtl
+        response: mutation/insertUserVehicle-response.vtl
+
+      - dataSource: TouchPark
+        type: Mutation
+        field: updateUserVehicle
+        request: mutation/updateUserVehicle-request.vtl
+        response: mutation/updateUserVehicle-response.vtl
+
+      - dataSource: TouchPark
+        type: Mutation
+        field: updateTransactionStatus
+        request: mutation/updateTransactionStatus-request.vtl
+        response: mutation/updateTransactionStatus-response.vtl
+
+      - dataSource: TouchPark
+        type: Mutation
+        field:  updateArriverLatLongs
+        request: mutation/updateArriverLatLongs-request.vtl
+        response: mutation/updateArriverLatLongs-response.vtl
+
+      - dataSource: TouchPark
+        type: Mutation
+        field: createNewParkingSpot
+        request: mutation/createNewParkingSpot-request.vtl
+        response: mutation/createNewParkingSpot-response.vtl
+
+      - dataSource: TouchPark
+        type: Mutation
+        field: CreateTrasactionHistory
+        request: mutation/CreateTrasactionHistory-request.vtl
+        response: mutation/CreateTrasactionHistory-response.vtl
+
+      - dataSource: parkHereLambda
+        type: Mutation
+        field: parkHere
+        request:  request-common.vtl
+        response: response.vtl
+
+      - dataSource: updateLocationLambda
+        type: Mutation
+        field: updateLocation
+        request: request-common.vtl
+        response: response.vtl
+
+      - dataSource: fcmLambda
+        type: Mutation
+        field: sendMessage
+        request: request-common.vtl
+        response: response.vtl
+
+      - dataSource: pickSpotLambda
+        type: Mutation
+        field: pickSpot
+        request: request-common.vtl
+        response: response.vtl
+
+    schema: schema.graphql
+    serviceRole: AppSyncServiceRole
+    dataSources:
+      - type: AWS_LAMBDA
+        name: fcmLambda
+        description: "Lambda DataSource for FCM Lambda"
+        config:
+          lambdaFunctionArn: { 'Fn::GetAtt': [FcmLambdaFunction, Arn] } #"arn:aws:lambda:us-east-1:${self:custom.accountId}:function:askMutation-beta"
+          serviceRoleArn: { 'Fn::GetAtt': [AppSyncServiceRole, Arn] }
+      - type: AWS_LAMBDA
+        name: getAvailableSpots
+        description: "Lambda DataSource for Get Available Spots"
+        config:
+          lambdaFunctionArn: { 'Fn::GetAtt': [GetAvailableSpots, Arn] }#"arn:aws:lambda:us-east-1:${self:custom.accountId}:function:availableWorkTypes-beta"
+          serviceRoleArn: { 'Fn::GetAtt': [AppSyncServiceRole, Arn] }
+      - type: AWS_LAMBDA
+        name: getBestSpotLambda
+        description: "Lambda DataSource for Get Best Spot"
+        config:
+          lambdaFunctionArn: { 'Fn::GetAtt': [GetBestSpotLambdaFunction, Arn] }#"arn:aws:lambda:us-east-1:${self:custom.accountId}:function:careerCategory-beta"
+          serviceRoleArn: { 'Fn::GetAtt': [AppSyncServiceRole, Arn] }
+      - type: AWS_LAMBDA
+        name: parkHereLambda
+        description: "Lambda DataSource for Park Here"
+        config:
+          lambdaFunctionArn: { 'Fn::GetAtt': [ParkHereLambdaFunction, Arn] } #"arn:aws:lambda:us-east-1:${self:custom.accountId}:function:getCareer-beta"
+          serviceRoleArn: { 'Fn::GetAtt': [AppSyncServiceRole, Arn] }
+      - type: AWS_LAMBDA
+        name: pickSpotLambda
+        description: "Lambda DataSource for Pick Spot Lambda"
+        config:
+          lambdaFunctionArn: { 'Fn::GetAtt': [PickSpotLambdaFunction, Arn] }#"arn:aws:lambda:us-east-1:${self:custom.accountId}:function:createWeight-beta"
+          serviceRoleArn: { 'Fn::GetAtt': [AppSyncServiceRole, Arn] }
+      - type: AWS_LAMBDA
+        name: updateLocationLambda
+        description: "Lambda DataSource for Update User Current Location"
+        config:
+          lambdaFunctionArn: { 'Fn::GetAtt': [updateLocationLambdaFunction, Arn] }#"arn:aws:lambda:us-east-1:${self:custom.accountId}:function:getEducation-beta"
+          serviceRoleArn: { 'Fn::GetAtt': [AppSyncServiceRole, Arn] }
+      - type: RELATIONAL_DATABASE
+        name: TouchPark
+        description: "Lambda DataSource for DB Connection"
+        config:
+          dbClusterIdentifier: ${cf:db-${self:custom.stage}.DBClusterArn}
+          awsSecretStoreArn: ${cf:db-${self:custom.stage}.MasterUserSecret}
+          databaseName: ${cf:db-${self:custom.stage}.DBName}
+          serviceRoleArn: { 'Fn::GetAtt': [AppSyncServiceRole, Arn] }
+
+resources:
+  Resources:
+    AppSyncServiceRole:
+      Type: "AWS::IAM::Role"
+      Description: "Allow AppSync to access to CloudWatch, DynamoDB and Lambda on your behalf"
+      Properties:
+        RoleName: AppSyncServiceRole-${self:custom.stage}
+        AssumeRolePolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: "Allow"
+              Principal:
+                Service:
+                  - "appsync.amazonaws.com"
+              Action:
+                - "sts:AssumeRole"
+        Policies:
+          - PolicyName: "SNS-AppSyncServiceRole-Policy"
+            PolicyDocument:
+              Version: "2012-10-17"
+              Statement:
+                - Effect: "Allow"
+                  Action:
+                    - sns:*
+                  Resource: "*"
+          - PolicyName: "SecretsManager-AppSyncServiceRole-Policy"
+            PolicyDocument:
+              Version: "2012-10-17"
+              Statement:
+                - Effect: "Allow"
+                  Action:
+                    - "secretsmanager:*"
+                  Resource:
+                    - "*"
+          - PolicyName: "RDS-AppSyncServiceRole-Policy"
+            PolicyDocument:
+              Version: "2012-10-17"
+              Statement:
+                - Effect: "Allow"
+                  Action:
+                    - "rds-data:*"
+                  Resource:
+                    - "*"
+          - PolicyName: "Elasticsearch-AppSyncServiceRole-Policy"
+            PolicyDocument:
+              Version: "2012-10-17"
+              Statement:
+                - Effect: "Allow"
+                  Action:
+                    - "es:*"
+                  Resource:
+                    - "*"
+          - PolicyName: "CloudWatch-AppSyncServiceRole-Policy"
+            PolicyDocument:
+              Version: "2012-10-17"
+              Statement:
+                - Effect: "Allow"
+                  Action:
+                    - logs:*
+                  Resource: "*"
+          - PolicyName: "Dynamo-AppSyncServiceRole-Policy"
+            PolicyDocument:
+              Version: "2012-10-17"
+              Statement:
+                - Effect: "Allow"
+                  Action:
+                    - dynamodb:*
+                  Resource: "*"
+          - PolicyName: "Lambda-AppSyncServiceRole-Policy"
+            PolicyDocument:
+              Version: "2012-10-17"
+              Statement:
+                - Effect: "Allow"
+                  Action:
+                    - lambda:*
+                  Resource: "*"
+
+  Outputs:
+    AppSyncServiceRoleArn:
+      Description: AppSyncServiceRoleArn
+      Value:
+        'Fn::GetAtt':
+          - AppSyncServiceRole
+          - Arn
+      Export:
+        Name: AppSyncServiceRoleArn-${self:custom.stage}

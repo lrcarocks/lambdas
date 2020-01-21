@@ -1,0 +1,11 @@
+#**
+  Select statement for a relational database data source
+*#
+{
+    "version": "2018-05-29",
+    "statements": [
+        "update DEVELOPMENTDB.UserDetails SET ReservedWing='$ctx.args.ReservedWing' where Username='$ctx.args.Username'",
+        "select Username,ReservedWing from DEVELOPMENTDB.UserDetails where Username='$ctx.args.Username'"
+
+    ]
+}

@@ -1,0 +1,36 @@
+
+#**
+  Select statement for a relational database data source
+*#
+## {
+##     "version": "2018-05-29",
+##     "statements": [
+##     "insert into DEVELOPMENTDB.UserVehicleDetails (`UserID`,`VehicleNumber`,`VehicleColor`) values(
+## $ctx.args.UserID,'$ctx.args.VehicleNumber','$ctx.args.VehicleColor')",
+##         "select * from DEVELOPMENTDB.UserVehicleDetails where UserID = $ctx.args.UserID"
+##     ]
+## }
+
+
+
+#set( $cols = [] )
+#set( $vals = [] )
+#foreach( $entry in $ctx.args.UserVehicleInput.keySet() )
+  #set( $discard = $cols.add($entry) )
+  #set( $discard = $vals.add("'$ctx.args.UserVehicleInput[$entry]'") )
+#end
+#set( $valStr = $vals.toString().replace("[","(").replace("]",")") )
+#set( $colStr = $cols.toString().replace("[","(").replace("]",")") )
+{
+  "version": "2018-05-29",
+  "statements":   [
+  "INSERT INTO DEVELOPMENTDB.UserVehicleDetails $colStr VALUES $valStr",
+  "SELECT * FROM DEVELOPMENTDB.UserVehicleDetails WHERE UserID=$ctx.args.UserVehicleInput.UserID "
+
+  ]
+}
+
+
+
+
+

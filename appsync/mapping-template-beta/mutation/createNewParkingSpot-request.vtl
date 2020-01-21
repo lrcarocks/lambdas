@@ -1,0 +1,18 @@
+#**
+  Select statement for a relational database data source
+*#
+#set( $cols = [] )
+#set( $vals = [] )
+#foreach( $entry in $ctx.args.CreateParkingSpot.keySet() )
+  #set( $discard = $cols.add($entry) )
+  #set( $discard = $vals.add("'$ctx.args.CreateParkingSpot[$entry]'") )
+#end
+#set( $valStr = $vals.toString().replace("[","(").replace("]",")") )
+#set( $colStr = $cols.toString().replace("[","(").replace("]",")") )
+{
+  "version": "2018-05-29",
+  "statements":   [
+  "INSERT INTO DEVELOPMENTDB.ParkingSpotDetails $colStr VALUES $valStr",
+  "SELECT * FROM DEVELOPMENTDB.ParkingSpotDetails WHERE ProviderID=$ctx.args.CreateParkingSpot.ProviderID AND WingCode='$ctx.args.CreateParkingSpot.WingCode' AND Latitude= '$ctx.args.CreateParkingSpot.Latitude' AND Longitude= '$ctx.args.CreateParkingSpot.Longitude'"
+  ]
+}

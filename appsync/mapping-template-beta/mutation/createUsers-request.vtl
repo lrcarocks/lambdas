@@ -1,0 +1,35 @@
+#**
+  Select statement for a relational database data source
+*#
+## {
+##     "version": "2018-05-29",
+##     "statements": [
+##          "insert into DEVELOPMENTDB.UserDetails VALUES ($ctx.args.CreateUserDetailsInput.ID, $ctx.args.CreateUserDetailsInput.UserId, $ctx.args.CreateUserDetailsInput.ProviderID,
+##          $ctx.args.CreateUserDetailsInput.Username, $ctx.args.CreateUserDetailsInput.FirstName , $ctx.args.CreateUserDetailsInput.LastName, $ctx.args.CreateUserDetailsInput.Email,
+##           $ctx.args.CreateUserDetailsInput.PhoneNumber, $ctx.args.CreateUserDetailsInput.Credit, $ctx.args.CreateUserDetailsInput.ReservedWing, $ctx.args.CreateUserDetailsInput.IsActive
+##           , $ctx.args.CreateUserDetailsInput.IsOnline, $ctx.args.CreateUserDetailsInput.IsHandicap, $ctx.args.CreateUserDetailsInput.Datecreated,
+##           $ctx.args.CreateUserDetailsInput.DateUpdated)",
+##         "select * from DEVELOPMENTDB.UserDetails WHERE UserId = $ctx.args.CreateUserDetailsInput.UserId"
+##     ]
+## }
+
+
+
+#set( $cols = [] )
+#set( $vals = [] )
+#foreach( $entry in $ctx.args.CreateUserDetailsInput.keySet() )
+  #set( $discard = $cols.add($entry) )
+  #set( $discard = $vals.add("'$ctx.args.CreateUserDetailsInput[$entry]'") )
+#end
+#set( $valStr = $vals.toString().replace("[","(").replace("]",")") )
+#set( $colStr = $cols.toString().replace("[","(").replace("]",")") )
+{
+  "version": "2018-05-29",
+  "statements":   [
+  "INSERT INTO DEVELOPMENTDB.UserDetails $colStr VALUES $valStr",
+  "SELECT * FROM DEVELOPMENTDB.UserDetails WHERE Username='$ctx.args.CreateUserDetailsInput.Username' "
+
+  ]
+}
+
+

@@ -1,0 +1,20 @@
+{
+  "name": "db",
+  "version": "1.0.0",
+  "description": "db microservice for entire mysqlauroradb system",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "appsync",
+    "graphql",
+    "db",
+    "mysqlauroradb"
+  ],
+  "author": "mysqlauroradb",
+  "license": "ISC",
+  "dependencies": {
+    "serverless-pseudo-parameters": "^2.5.0"
+  },
+  "devDependencies": {}
+}

@@ -1,0 +1,10 @@
+#**
+  Select statement for a relational database data source
+*#
+{
+    "version": "2018-05-29",
+    "statements": [
+       ## "SELECT t1.ID as TrasHistoryID, t1.ParkingSpotID, t1.UserId, t1.EntryTime, t1.ExitTime, t1.IsConfirmed, t2.ID as SPOTID, t2.ProviderID, t2.WingCode, t2.Latitude as Latitude, t2.Longitude as Longitude , t3.FcmToken FROM DEVELOPMENTDB.ParkingTransactionDetails as t1 INNER JOIN  DEVELOPMENTDB.ParkingSpotDetails as t2 ON t1.ParkingSpotID= t2.ID INNER JOIN DEVELOPMENTDB.UserDetails as t3 ON t1.UserId=t3.ID AND t2.ProviderID=t3.ProviderID WHERE DATE_FORMAT(t1.ExitTime,'%Y-%m-%d')=DATE_FORMAT('$ctx.args.date','%Y-%m-%d') AND (DATE_FORMAT(t1.ExitTime,'%H:%i:%s') <=  ADDTIME('$ctx.args.time','0:10:0')) AND t2.WingCode= '$ctx.args.ReservedWing' AND (t1.TrasactionCompleted is NULL OR t1.TrasactionCompleted is false ) AND t1.ArriverId is NULL AND t2.ProviderID=$ctx.args.providerId"
+       "SELECT t1.ID as TrasHistoryID, t1.ParkingSpotID, t1.UserId, t1.EntryTime, t1.ExitTime, t1.IsConfirmed, t2.ID as SPOTID, t2.ProviderID, t2.WingCode, t2.Latitude as Latitude, t2.Longitude as Longitude , t3.FcmToken FROM DEVELOPMENTDB.ParkingTransactionDetails as t1 INNER JOIN  DEVELOPMENTDB.ParkingSpotDetails as t2 ON t1.ParkingSpotID= t2.ID INNER JOIN DEVELOPMENTDB.UserDetails as t3 ON t1.UserId=t3.ID AND t2.ProviderID=t3.ProviderID WHERE DATE_FORMAT(t1.ExitTime,'%Y-%m-%d')=DATE_FORMAT(CURRENT_DATE(),'%Y-%m-%d') AND (DATE_FORMAT(t1.ExitTime,'%H:%i:%s') <=CURRENT_TIME()) AND t2.WingCode= '$ctx.args.ReservedWing' AND (t1.TrasactionCompleted is NULL OR t1.TrasactionCompleted is false ) AND t1.ArriverId is NULL AND t1.UserId <> $ctx.args.userId  AND t2.ProviderID=$ctx.args.providerId"
+       ]
+}

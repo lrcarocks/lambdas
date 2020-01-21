@@ -1,0 +1,9 @@
+#**
+  Select statement for a relational database data source
+*#
+{
+    "version": "2018-05-29",
+    "statements": [
+        "SELECT pm1.id,pm1.WingCode,pm1.ParkingLetter,pm1.latitude,pm1.longitude,pm1.status,ROUND((CASE 'miles' WHEN 'miles' THEN 3959 ELSE 6371 END * acos( cos( radians('$ctx.args.lat') ) * cos( radians(pm1.latitude) ) * cos( radians(pm1.longitude) - radians('$ctx.args.long')) + sin(radians('$ctx.args.lat')) * sin( radians(pm1.latitude)))), 3) AS distance FROM DEVELOPMENTDB.ParkingSpotDetails AS pm1 WHERE pm1.status != true AND pm1.WingCode= '$ctx.args.ReservedWing' HAVING distance <= 300 ORDER BY distance ASC LIMIT $ctx.args.limit"
+    ]
+}

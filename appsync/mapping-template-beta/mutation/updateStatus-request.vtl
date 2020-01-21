@@ -1,0 +1,11 @@
+
+#**
+  Select statement for a relational database data source
+*#
+{
+    "version": "2018-05-29",
+    "statements": [
+        "UPDATE DEVELOPMENTDB.ParkingSpotDetails SET status = $ctx.args.status where ID=$ctx.args.id",
+        "SELECT * FROM DEVELOPMENTDB.ParkingSpotDetails WHERE ID=$ctx.args.id"
+    ]
+}

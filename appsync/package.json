@@ -1,0 +1,28 @@
+{
+  "name": "appsync",
+  "version": "1.0.0",
+  "description": "appsync microservice of touchpark system",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "appsync",
+    "graphql",
+    "touchpark"
+  ],
+  "author": "fliphire",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.19.0",
+    "data-api-client": "^1.0.1",
+    "aws-sdk": "^2.594.0",
+    "google-distance-matrix": "^1.1.1",
+    "node-fetch": "^2.6.0"
+  },
+  "devDependencies": {
+    "serverless": "^1.61.0",
+    "serverless-appsync-plugin": "^1.0.8",
+    "serverless-plugin-split-stacks": "^1.7.0",
+    "serverless-pseudo-parameters": "^2.5.0"
+  }
+}
