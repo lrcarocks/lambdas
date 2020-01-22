@@ -418,7 +418,7 @@ custom:
         name: updateLocationLambda
         description: "Lambda DataSource for Update User Current Location"
         config:
-          lambdaFunctionArn: { 'Fn::GetAtt': [updateLocationLambdaFunction, Arn] }#"arn:aws:lambda:us-east-1:${self:custom.accountId}:function:getEducation-beta"
+          lambdaFunctionArn: { 'Fn::GetAtt': [UpdateLocationLambdaFunction, Arn] }#"arn:aws:lambda:us-east-1:${self:custom.accountId}:function:getEducation-beta"
           serviceRoleArn: { 'Fn::GetAtt': [AppSyncServiceRole, Arn] }
       - type: RELATIONAL_DATABASE
         name: TouchPark
