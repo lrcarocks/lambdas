@@ -8,7 +8,7 @@ provider:
   region: us-east-1
   stage: beta
   memorySize: ${self:custom.memSize.${self:custom.stage}}
-  profile: ams-backend
+  profile: touchpark-backend
   # profile: fliphire
   versionFunctions: false
   environment:
@@ -101,20 +101,20 @@ custom:
     dev: 128
     beta: 512
   stage: ${opt:stage, self:provider.stage}
-  accountId: 884743863304
+  accountId: 406941641630
   splitStacks:
     perFunction: false
     perType: true
   authType:
-    dev: AMAZON_COGNITO_USER_POOLS
-    beta: AMAZON_COGNITO_USER_POOLS
+    dev: API_KEY
+    beta: API_KEY
   appSync:
     name: TouchPark-${self:custom.stage}
     authenticationType: ${self:custom.authType.${self:custom.stage}}
     userPoolConfig:
       awsRegion: ${self:provider.region}
       defaultAction: ALLOW
-      userPoolId: us-east-1_4lkcldKjN #${env:USER_POOL_ID}
+      userPoolId: us-east-1_3C2FUfYPR
     logConfig:
       loggingRoleArn: { 'Fn::GetAtt': [AppSyncServiceRole, Arn] }
       level: ALL

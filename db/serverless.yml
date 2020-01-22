@@ -61,12 +61,12 @@ resources:
       Properties: 
         DBSubnetGroupDescription: DB Subnet Group Created
         SubnetIds: 
-          - subnet-1936a427
-          - subnet-cb4217e5
-          - subnet-16213f5c
-          - subnet-fe246a99
-          - subnet-cca9e290
-          - subnet-2538382a
+          - subnet-cb3f0fc4
+          - subnet-972b25dd
+          - subnet-0f067868
+          - subnet-af642181
+          - subnet-7956d447
+          - subnet-eb661db7
         
     
     # Bastion:
