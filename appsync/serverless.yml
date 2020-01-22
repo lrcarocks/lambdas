@@ -215,14 +215,14 @@ custom:
       - dataSource: TouchPark
         type: Query
         field: getUserVehicle
-        request: recruiter/videos-request.vtl
+        request: request.vtl
         response: response.vtl
 
       - dataSource: TouchPark
         type: Query
         field: getReservedSpotDetailsOfTheUser
-        request: recruiter/video-request.vtl
-        response: recruiter/video-response.vtl
+        request: request.vtl
+        response: response.vtl
 
       - dataSource: TouchPark
         type: Query
