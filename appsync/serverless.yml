@@ -394,7 +394,7 @@ custom:
         name: getAvailableSpotsLambda
         description: "Lambda DataSource for Get Available Spots"
         config:
-          lambdaFunctionArn: { 'Fn::GetAtt': [GetAvailableSpots, Arn] }#"arn:aws:lambda:us-east-1:${self:custom.accountId}:function:availableWorkTypes-beta"
+          lambdaFunctionArn: { 'Fn::GetAtt': [GetAvailableSpotsLambdaFunction, Arn] }#"arn:aws:lambda:us-east-1:${self:custom.accountId}:function:availableWorkTypes-beta"
           serviceRoleArn: { 'Fn::GetAtt': [AppSyncServiceRole, Arn] }
       - type: AWS_LAMBDA
         name: getBestSpotLambda
