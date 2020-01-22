@@ -354,8 +354,8 @@ custom:
       - dataSource: TouchPark
         type: Mutation
         field: CreateTrasactionHistory
-        request: mutation/CreateTrasactionHistory-request.vtl
-        response: mutation/CreateTrasactionHistory-response.vtl
+        request: mutation/createTrasactionHistory-request.vtl
+        response: mutation/createTrasactionHistory-response.vtl
 
       - dataSource: parkHereLambda
         type: Mutation
