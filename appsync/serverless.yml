@@ -167,7 +167,7 @@ custom:
       - dataSource: getBestSpotLambda
         type: Query
         field: getBestSpot
-        request: query/request.vtl
+        request: request-common.vtl
         response: response.vtl
 
       - dataSource: getAvailableSpots
