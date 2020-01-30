@@ -4,12 +4,12 @@
 ## {
 ##     "version": "2018-05-29",
 ##     "statements": [
-##          "insert into DEVELOPMENTDB.UserDetails VALUES ($ctx.args.CreateUserDetailsInput.ID, $ctx.args.CreateUserDetailsInput.UserId, $ctx.args.CreateUserDetailsInput.ProviderID,
+##          "insert into mysqlauroradb.UserDetails VALUES ($ctx.args.CreateUserDetailsInput.ID, $ctx.args.CreateUserDetailsInput.UserId, $ctx.args.CreateUserDetailsInput.ProviderID,
 ##          $ctx.args.CreateUserDetailsInput.Username, $ctx.args.CreateUserDetailsInput.FirstName , $ctx.args.CreateUserDetailsInput.LastName, $ctx.args.CreateUserDetailsInput.Email,
 ##           $ctx.args.CreateUserDetailsInput.PhoneNumber, $ctx.args.CreateUserDetailsInput.Credit, $ctx.args.CreateUserDetailsInput.ReservedWing, $ctx.args.CreateUserDetailsInput.IsActive
 ##           , $ctx.args.CreateUserDetailsInput.IsOnline, $ctx.args.CreateUserDetailsInput.IsHandicap, $ctx.args.CreateUserDetailsInput.Datecreated,
 ##           $ctx.args.CreateUserDetailsInput.DateUpdated)",
-##         "select * from DEVELOPMENTDB.UserDetails WHERE UserId = $ctx.args.CreateUserDetailsInput.UserId"
+##         "select * from mysqlauroradb.UserDetails WHERE UserId = $ctx.args.CreateUserDetailsInput.UserId"
 ##     ]
 ## }
 
@@ -26,8 +26,8 @@
 {
   "version": "2018-05-29",
   "statements":   [
-  "INSERT INTO DEVELOPMENTDB.UserDetails $colStr VALUES $valStr",
-  "SELECT * FROM DEVELOPMENTDB.UserDetails WHERE Username='$ctx.args.CreateUserDetailsInput.Username' "
+  "INSERT INTO mysqlauroradb.UserDetails $colStr VALUES $valStr",
+  "SELECT * FROM mysqlauroradb.UserDetails WHERE Username='$ctx.args.CreateUserDetailsInput.Username' "
 
   ]
 }
