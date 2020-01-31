@@ -4,7 +4,7 @@
 {
     "version": "2018-05-29",
     "statements": [
-        "Update DEVELOPMENTDB.UserVehicleDetails SET VehicleNumber='$ctx.args.VehicleNumber',VehicleColor='$ctx.args.VehicleColor',VehicleName='$ctx.args.VehicleName', VehicleModel='$ctx.args.VehicleModel' where UserID=$ctx.args.UserID",
-        "SELECT * FROM DEVELOPMENTDB.UserVehicleDetails where UserID=$ctx.args.UserID"
+        "Update mysqlauroradb.UserVehicleDetails SET VehicleNumber='$ctx.args.VehicleNumber',VehicleColor='$ctx.args.VehicleColor',VehicleName='$ctx.args.VehicleName', VehicleModel='$ctx.args.VehicleModel' where UserID=$ctx.args.UserID",
+        "SELECT * FROM mysqlauroradb.UserVehicleDetails where UserID=$ctx.args.UserID"
     ]
 }

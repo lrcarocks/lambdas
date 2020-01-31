@@ -12,7 +12,7 @@
 {
   "version": "2018-05-29",
   "statements":   [
-  "INSERT INTO DEVELOPMENTDB.ParkingSpotDetails $colStr VALUES $valStr",
-  "SELECT * FROM DEVELOPMENTDB.ParkingSpotDetails WHERE ProviderID=$ctx.args.CreateParkingSpot.ProviderID AND WingCode='$ctx.args.CreateParkingSpot.WingCode' AND Latitude= '$ctx.args.CreateParkingSpot.Latitude' AND Longitude= '$ctx.args.CreateParkingSpot.Longitude'"
+  "INSERT INTO mysqlauroradb.ParkingSpotDetails $colStr VALUES $valStr",
+  "SELECT * FROM mysqlauroradb.ParkingSpotDetails WHERE ProviderID=$ctx.args.CreateParkingSpot.ProviderID AND WingCode='$ctx.args.CreateParkingSpot.WingCode' AND Latitude= '$ctx.args.CreateParkingSpot.Latitude' AND Longitude= '$ctx.args.CreateParkingSpot.Longitude'"
   ]
 }

@@ -5,9 +5,9 @@
 ## {
 ##     "version": "2018-05-29",
 ##     "statements": [
-##     "insert into DEVELOPMENTDB.UserVehicleDetails (`UserID`,`VehicleNumber`,`VehicleColor`) values(
+##     "insert into mysqlauroradb.UserVehicleDetails (`UserID`,`VehicleNumber`,`VehicleColor`) values(
 ## $ctx.args.UserID,'$ctx.args.VehicleNumber','$ctx.args.VehicleColor')",
-##         "select * from DEVELOPMENTDB.UserVehicleDetails where UserID = $ctx.args.UserID"
+##         "select * from mysqlauroradb.UserVehicleDetails where UserID = $ctx.args.UserID"
 ##     ]
 ## }
 
@@ -24,8 +24,8 @@
 {
   "version": "2018-05-29",
   "statements":   [
-  "INSERT INTO DEVELOPMENTDB.UserVehicleDetails $colStr VALUES $valStr",
-  "SELECT * FROM DEVELOPMENTDB.UserVehicleDetails WHERE UserID=$ctx.args.UserVehicleInput.UserID "
+  "INSERT INTO mysqlauroradb.UserVehicleDetails $colStr VALUES $valStr",
+  "SELECT * FROM mysqlauroradb.UserVehicleDetails WHERE UserID=$ctx.args.UserVehicleInput.UserID "
 
   ]
 }
