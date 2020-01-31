@@ -4,7 +4,7 @@
 {
     "version": "2018-05-29",
     "statements": [
-        	"update DEVELOPMENTDB.ParkingTransactionDetails SET TrasactionCompleted = true where ID=$ctx.args.ID",
-             "SELECT * FROM DEVELOPMENTDB.ParkingTransactionDetails WHERE ID=$ctx.args.ID"
+        	"update mysqlauroradb.ParkingTransactionDetails SET TrasactionCompleted = true where ID=$ctx.args.ID",
+             "SELECT * FROM mysqlauroradb.ParkingTransactionDetails WHERE ID=$ctx.args.ID"
     ]
 }

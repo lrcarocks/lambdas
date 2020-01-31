@@ -4,7 +4,7 @@
 {
     "version": "2018-05-29",
     "statements": [
-        "UPDATE DEVELOPMENTDB.ParkingTransactionDetails SET IsParked = 1,ActualEntryTime=CURRENT_TIMESTAMP WHERE ParkingReservationID=$ctx.args.ParkingReservationID",
-        "SELECT * FROM DEVELOPMENTDB.ParkingTransactionDetails WHERE ParkingReservationID=$ctx.args.ParkingReservationID"
+        "UPDATE mysqlauroradb.ParkingTransactionDetails SET IsParked = 1,ActualEntryTime=CURRENT_TIMESTAMP WHERE ParkingReservationID=$ctx.args.ParkingReservationID",
+        "SELECT * FROM mysqlauroradb.ParkingTransactionDetails WHERE ParkingReservationID=$ctx.args.ParkingReservationID"
     ]
 }

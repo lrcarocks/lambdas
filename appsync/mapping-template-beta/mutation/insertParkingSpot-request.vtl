@@ -4,7 +4,7 @@
 {
     "version": "2018-05-29",
     "statements": [
-        "INSERT INTO DEVELOPMENTDB.ParkingSpotReservation (ParkingSpotID,UserID) VALUES ($ctx.args.ParkingSpotID,$ctx.args.UserID)",
-        "SELECT * FROM DEVELOPMENTDB.ParkingSpotReservation where ParkingSpotID=$ctx.args.ParkingSpotID AND UserID=$ctx.args.UserID order by ID desc LIMIT 1"
+        "INSERT INTO mysqlauroradb.ParkingSpotReservation (ParkingSpotID,UserID) VALUES ($ctx.args.ParkingSpotID,$ctx.args.UserID)",
+        "SELECT * FROM mysqlauroradb.ParkingSpotReservation where ParkingSpotID=$ctx.args.ParkingSpotID AND UserID=$ctx.args.UserID order by ID desc LIMIT 1"
     ]
 }

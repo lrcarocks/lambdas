@@ -23,7 +23,7 @@ module.exports.handler = async event => {
             ExitTime: ExitTime,
             TrasactionCompleted: false
         });
-        const rQry = 'SELECT t1.ParkingSpotID as ParkingSpotID , t2.ProviderID as ProviderID,t2.ID as ID,t1.UserId as UserId,t1.ID as TransHistoryID,t1.TrasactionCompleted as TrasactionCompleted,t1.IsConfirmed as IsConfirmed,t1.ArriverId as ArriverId ,t1.ArriverLat as ArriverLat,t1.ArriverLong as ArriverLong,t2.WingCode as WingCode,t2.Latitude as parkedLat,t2.Longitude as parkedLong FROM DEVELOPMENTDB.ParkingTransactionDetails as t1 inner join DEVELOPMENTDB.ParkingSpotDetails as t2 on t1.ParkingSpotID=t2.ID  WHERE t1.ParkingSpotID=:spotId  and (t1.TrasactionCompleted is NULL OR t1.TrasactionCompleted is false)  ORDER BY t1.ExitTime DESC limit 1';
+        const rQry = 'SELECT t1.ParkingSpotID as ParkingSpotID , t2.ProviderID as ProviderID,t2.ID as ID,t1.UserId as UserId,t1.ID as TransHistoryID,t1.TrasactionCompleted as TrasactionCompleted,t1.IsConfirmed as IsConfirmed,t1.ArriverId as ArriverId ,t1.ArriverLat as ArriverLat,t1.ArriverLong as ArriverLong,t2.WingCode as WingCode,t2.Latitude as parkedLat,t2.Longitude as parkedLong FROM mysqlauroradb.ParkingTransactionDetails as t1 inner join mysqlauroradb.ParkingSpotDetails as t2 on t1.ParkingSpotID=t2.ID  WHERE t1.ParkingSpotID=:spotId  and (t1.TrasactionCompleted is NULL OR t1.TrasactionCompleted is false)  ORDER BY t1.ExitTime DESC limit 1';
         // console.log(rQry);
         let resp = await client.query(rQry, {spotId: insertId});
         console.log(JSON.stringify(resp));
