@@ -34,10 +34,10 @@ module.exports.handler = async event => {
     });
     console.log("PAY-INTENT", paymentIntent);
 
-    const confirmPayment = await stripe.paymentIntents.confirm(paymentIntent.id);
-    console.log("PAY-CONFIRM", confirmPayment);
+    // const confirmPayment = await stripe.paymentIntents.confirm(paymentIntent.id);
+    // console.log("PAY-CONFIRM", confirmPayment);
 
-    const retrieve = await stripe.paymentIntents.confirm(paymentIntent.id);
+    const retrieve = await stripe.paymentIntents.retrieve(paymentIntent.id);
     console.log("PAY-RETRIEVE", retrieve);
 
     //3. capture payment using payment intent
