@@ -75,10 +75,14 @@ package:
     - schema.gql
 
 functions:
+  paymentIntent:
+    handler: paymentIntent.handler
+    description: "Lambda to create payment Intent"
 
   Fcm:
     handler: fcm.handler
     description: "Lambda resolver to push fcm message to users "
+
   getAvailableSpots:
     handler: getAvailableSpots.handler
     description: "Lambda resolver for Get Available Spots"
@@ -86,12 +90,15 @@ functions:
   getBestSpot:
     handler: getBestSpot.handler
     description: "Lambda resolver for Get Best Spot"
+
   parkHere:
     handler: parkHere.handler
     description: "Lambda resolver for Park Here"
+
   pickSpot:
     handler: pickSpot.handler
     description: "Lambda resolver for Pick Best Spot"
+
   updateLocation:
     handler: updateLocation.handler
     description: "Lambda resolver for Update User Current Position"
@@ -120,6 +127,12 @@ custom:
       level: ALL
     mappingTemplatesLocation: mapping-template-${self:custom.stage}
     mappingTemplates:
+      - dataSource: paymentIntent
+        type: Mutation
+        field: createPayment
+        request: request.vtl
+        response: response.vtl
+
       - dataSource: TouchPark
         type: Query
         field: singlePost
@@ -384,6 +397,13 @@ custom:
     schema: schema.graphql
     serviceRole: AppSyncServiceRole
     dataSources:
+      - type: AWS_LAMBDA
+        name: paymentIntent
+        description: "Lambda DataSource for payment creation"
+        config:
+          lambdaFunctionArn: { 'Fn::GetAtt': [PaymentIntentLambdaFunction, Arn] } #"arn:aws:lambda:us-east-1:${self:custom.accountId}:function:askMutation-beta"
+          serviceRoleArn: { 'Fn::GetAtt': [AppSyncServiceRole, Arn] }
+
       - type: AWS_LAMBDA
         name: fcmLambda
         description: "Lambda DataSource for FCM Lambda"
