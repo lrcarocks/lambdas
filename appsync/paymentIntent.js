@@ -24,6 +24,11 @@ module.exports.handler = async event => {
     });
     console.log("PAY-METHOD", paymentMethod);
     const payId = paymentMethod.id;
+    const result = {
+        transId: -1,
+        status: "",
+        amount: 0
+    };
 
     //2. create payment intent
     const paymentIntent = await stripe.paymentIntents.create({
@@ -41,16 +46,18 @@ module.exports.handler = async event => {
     const retrieve = await stripe.paymentIntents.retrieve(paymentIntent.id);
     console.log("PAY-RETRIEVE", retrieve);
 
-    //3. capture payment using payment intent
-    const paymentCapture = await stripe.paymentIntents.capture(paymentIntent.id);
-    console.log("PAY-CAPTURE", paymentCapture);
-
-    // Send publishable key and PaymentIntent details to client
-    const result = {
-        transId: paymentCapture.id,
-        status: paymentCapture.status,
-        amount: paymentCapture.amount
-    };
+    if (retrieve.status === 'requires_capture') {
+        //3. capture payment using payment intent, if status is required_action
+        const paymentCapture = await stripe.paymentIntents.capture(paymentIntent.id);
+        console.log("PAY-CAPTURE", paymentCapture);
+        result.amount = paymentCapture.amount_received;
+        result.transId = paymentCapture.id;
+        result.status = paymentCapture.status;
+    } else {
+        result.amount = retrieve.amount_received;
+        result.transId = retrieve.id;
+        result.status = retrieve.status;
+    }
 
     return result;
 };
