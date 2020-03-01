@@ -13,11 +13,12 @@
   "author": "fliphire",
   "license": "ISC",
   "dependencies": {
+    "aws-sdk": "^2.594.0",
     "axios": "^0.19.0",
     "data-api-client": "^1.0.1",
-    "aws-sdk": "^2.594.0",
     "google-distance-matrix": "^1.1.1",
-    "node-fetch": "^2.6.0"
+    "node-fetch": "^2.6.0",
+    "stripe": "^8.24.0"
   },
   "devDependencies": {
     "serverless": "^1.61.0",

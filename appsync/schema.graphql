@@ -53,7 +53,7 @@ type Mutation {
   updateUserFcmAndDevice(DevicePlatform: String!, FcmToken: String!, Username: String!): User
   updateUserVehicle(UserID: Int!, VehicleColor: String, VehicleModel: String, VehicleName: String, VehicleNumber: String!): UservehicleDetails
   updateUsercognitoId(UserCognitoId: String!, Username: String!): updateusercognitoId
-  createPayment(amount: String!): Payment
+  createPayment(amount: Float!): Payment
 }
 
 type Payment{

@@ -9,7 +9,6 @@ provider:
   stage: beta
   memorySize: ${self:custom.memSize.${self:custom.stage}}
   profile: touchpark-backend
-  # profile: fliphire
   versionFunctions: false
   environment:
     AWS_SECRET_STORE_ARN: ${cf:db-${self:custom.stage}.MasterUserSecret}
@@ -17,6 +16,8 @@ provider:
     DB_NAME: ${cf:db-${self:custom.stage}.DBName}
     STAGE: ${self:custom.stage}
     AWSREGION: ${self:provider.region}
+    STRIPE_PUBLISHABLE_KEY: "pk_test_v1WdJ2Us9lvNvmznUgHyL0uR00LKt1sToh"
+    STRIPE_SECRET_KEY: "sk_test_PkuVCtuwhPb99IN1XFaxCBrm00BLaemmP4"
 
   iamRoleStatements:
     - Effect: "Allow"

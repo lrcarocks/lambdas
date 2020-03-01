@@ -6,9 +6,22 @@ const client = require('data-api-client')({
     database: process.env.DB_NAME
 });
 
+const SECERT_KEY = process.env.STRIPE_SECRET_KEY;
+
+const stripe = require('stripe')(SECERT_KEY);
 
 module.exports.handler = async event => {
     const {amount} = event.arguments;
+    const paymentIntent = await stripe.paymentIntents.create({
+        amount: amount,
+        currency: 'usd'
+    });
 
-    return event;
+    // Send publishable key and PaymentIntent details to client
+    const result = {
+        key: process.env.STRIPE_PUBLISHABLE_KEY,
+        secret: paymentIntent.client_secret
+    };
+
+    return result;
 };
