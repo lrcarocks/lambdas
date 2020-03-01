@@ -30,8 +30,7 @@ module.exports.handler = async event => {
         amount: amount,
         currency: 'usd',
         payment_method_types: ['card'],
-        payment_method: payId,
-        confirm: true
+        payment_method: payId
     });
     console.log("PAY-INTENT", paymentIntent);
 
