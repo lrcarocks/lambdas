@@ -223,8 +223,8 @@ custom:
       - dataSource: TouchPark
         type: Query
         field: getUser
-        request: request.vtl
-        response: response.vtl
+        request: getUser-request.vtl
+        response: getUser-response.vtl
 
       - dataSource: TouchPark
         type: Query
