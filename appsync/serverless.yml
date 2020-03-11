@@ -200,8 +200,8 @@ custom:
       - dataSource: TouchPark
         type: Query
         field: getAvailableLocationsForGoldWing
-        request: request.vtl
-        response: response.vtl
+        request: query/getAvailableLocationsForGoldWing-request.vtl
+        response: query/response-common.vtl
 
       - dataSource: TouchPark
         type: Query
@@ -230,26 +230,26 @@ custom:
       - dataSource: TouchPark
         type: Query
         field: getUserVehicle
-        request: request.vtl
-        response: response.vtl
+        request: query/getUserVehicle-request.vtl
+        response: query/response-common.vtl
 
       - dataSource: TouchPark
         type: Query
         field: getReservedSpotDetailsOfTheUser
-        request: request.vtl
-        response: response.vtl
+        request: query/getReservedSpotDetailsOfTheUser-request.vtl
+        response: query/response-common.vtl
 
       - dataSource: TouchPark
         type: Query
         field: getTrasactionHistory
-        request: request.vtl
-        response: response.vtl
+        request: query/getTrasactionHistory-request.vtl
+        response: query/response-common.vtl
 
       - dataSource: TouchPark
         type: Query
         field: getArriverLatLongs
-        request:  request.vtl
-        response: response.vtl
+        request:  query/getArriverLatLongs-request.vtl
+        response: query/response-common.vtl
 
       - dataSource: TouchPark
         type: Mutation

@@ -166,6 +166,7 @@ type availableLocations {
   TrasHistoryID: Int!
   UserId: Int
   WingCode: String!
+  PhoneNumber: String
 }
 
 type locationId {

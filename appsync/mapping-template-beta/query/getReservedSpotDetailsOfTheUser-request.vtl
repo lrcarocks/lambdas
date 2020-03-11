@@ -1,0 +1,9 @@
+#**
+  Select statement for a relational database data source
+*#
+{
+    "version": "2018-05-29",
+    "statements": [
+ 		"SELECT t1.ID as ParkingSpotID, t1.ProviderID,t1.WingCode,t1.Latitude as parkedLat,t1.Longitude as parkedLong, t2.UserId,  t2.TrasactionCompleted, t2.ID as TransHistoryID,t2.IsConfirmed,t2.ArriverId,t2.ArriverLat,t2.ArriverLong  FROM mysqlauroradb.ParkingSpotDetails as t1 LEFT JOIN mysqlauroradb.ParkingTransactionDetails as t2 ON t1.ID= t2.ParkingSpotID WHERE t2.UserId=$ctx.args.userId AND DATE_FORMAT(t2.ExitTime,'%Y-%m-%d')=DATE_FORMAT(CURRENT_DATE(),'%Y-%m-%d') AND ifnull ( t2.TrasactionCompleted,'')=false"
+   ]
+}
