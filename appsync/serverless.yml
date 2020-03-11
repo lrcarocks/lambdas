@@ -7,6 +7,7 @@ provider:
   runtime: nodejs12.x
   region: us-east-1
   stage: beta
+  timeout: 15
   memorySize: ${self:custom.memSize.${self:custom.stage}}
   profile: touchpark-backend
   versionFunctions: false
@@ -223,8 +224,8 @@ custom:
       - dataSource: TouchPark
         type: Query
         field: getUser
-        request: getUser-request.vtl
-        response: getUser-response.vtl
+        request: query/getUser-request.vtl
+        response: query/getUser-response.vtl
 
       - dataSource: TouchPark
         type: Query
