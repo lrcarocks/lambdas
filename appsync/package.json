@@ -21,7 +21,7 @@
     "stripe": "^8.24.0"
   },
   "devDependencies": {
-    "serverless": "^1.61.0",
+    "serverless": "^3.25.1",
     "serverless-appsync-plugin": "^1.0.8",
     "serverless-plugin-split-stacks": "^1.7.0",
     "serverless-pseudo-parameters": "^2.5.0"
